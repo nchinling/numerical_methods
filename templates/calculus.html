@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+
+    <h1>Derivative and Integral Calculator</h1>
+    <div class="col-md-6">
+        <form method="POST" action="/calculus" onsubmit="return validateForm();">
+            <label for="expression">Enter a mathematical expression in terms of <i>x</i>:</label>
+            <input class="form-control" type="text" id="mathquill-input" name="expression" required
+                value="{{ request.form['expression'] if request.form['expression'] else '' }}">
+            <br>
+
+            <input class="form-check-input" type="checkbox" id="derivative" name="operation" value="derivative" {%
+                if 'operation' in request.form and request.form['operation']=='derivative' %}checked{% endif %}>
+
+            <label class="form-check-label" for="derivative"> Derivative</label>
+
+            <input class="form-check-input" type="checkbox" id="integral" name="operation" value="integral" {%
+                if 'operation' in request.form and request.form['operation']=='integral' %}checked{% endif %}>
+            <label class="form-check-label" for="integral"> Integral</label>&nbsp;&nbsp;
+
+            <button type="submit" class="btn btn-secondary">Calculate</button>
+            <p id="error-message"></p>
+
+        </form>
+
+        <p style="display: flex; align-items: center;">Result:&nbsp;
+            {% if latex_result %}
+            <span class="math-tex">\[{{latex_result}}\]</span>
+            {% endif %}
+            {% if error%}
+            <span>{{error}}</span>
+            {% endif %}
+        </p>
+    </div>
+
+
+    <p><a href="/">Back to Home</a></p>
+
+
+</div>
+
+<script>
+    function validateForm() {
+        var derivativeCheckbox = document.getElementById("derivative");
+        var integralCheckbox = document.getElementById("integral");
+        var errorMessageElement = document.getElementById("error-message");
+
+        if (!derivativeCheckbox.checked && !integralCheckbox.checked) {
+            errorMessageElement.textContent = "Please select at least one operation (Derivative or Integral).";
+            return false;
+        }
+        if (derivativeCheckbox.checked && integralCheckbox.checked) {
+            errorMessageElement.textContent = "Please select only one operation (Derivative or Integral).";
+            return false;
+        }
+
+        errorMessageElement.textContent = "";
+
+        return true;
+    }
+
+    var mathFieldSpan = document.getElementById('mathquill-input');
+    var mathField = MQ.MathField(mathFieldSpan, {
+        spaceBehavesLikeTab: true, // Customize MathQuill behavior
+    });
+
+    // Capture the input and update the hidden input field
+    mathField.keystroke(
+        event => {
+            var latex = mathField.latex();
+            document.getElementById('expression').value = latex;
+        }
+    );
+
+</script>
+{% endblock %}

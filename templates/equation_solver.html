@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <div class="col-md-6">
+        <h1>Linear and Quadratic Equation Solver</h1>
+        <form method="POST">
+            <label for="equation">Enter an equation to solve for <i>x</i>. (<i>The right-hand side must be equal to </i>
+                0):</label>
+            <input class="form-control" type="text" id="equation" name="equation" required
+                value="{{ request.form['equation'] if request.form['equation'] else '' }}">
+            <br>
+            <button type="submit" class="btn btn-secondary">Solve</button>
+        </form>
+        <br>
+        <p style="display: flex; align-items: center;">Solution:&nbsp;
+            {% if latex_solutions %}
+
+            <span class="math-tex">\[{{latex_solutions}}\]</span>
+
+            {% endif %}
+            {% if error%}
+            <span>{{error}}</span>
+            {% endif %}
+        </p>
+        <p><a href="/">Back to Home</a></p>
+
+    </div>
+</div>
+{% endblock %}
