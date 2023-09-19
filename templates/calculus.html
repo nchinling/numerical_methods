@@ -1,15 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
+
 <div class="container">
 
     <h1>Derivative and Integral Calculator</h1>
     <div class="col-md-6">
         <form method="POST" action="/calculus" onsubmit="return validateForm();">
             <label for="expression">Enter a mathematical expression in terms of <i>x</i>:</label>
-            <input class="form-control" type="text" id="mathquill-input" name="expression" required
-                value="{{ request.form['expression'] if request.form['expression'] else '' }}">
             <br>
+
+            <div id="mathquill-input" class="mathquill-input form-control" required>
+            </div>
+            <br><br>
+
+            <input type="hidden" id="mathquill-latex" name="mathquill_latex"
+                value="{{ request.form['mathquill_latex'] }}">
+            <input type="hidden" id="mathquill-plain" name="mathquill_plain">
 
             <input class="form-check-input" type="checkbox" id="derivative" name="operation" value="derivative" {%
                 if 'operation' in request.form and request.form['operation']=='derivative' %}checked{% endif %}>
@@ -42,6 +49,7 @@
 </div>
 
 <script>
+
     function validateForm() {
         var derivativeCheckbox = document.getElementById("derivative");
         var integralCheckbox = document.getElementById("integral");
@@ -57,22 +65,33 @@
         }
 
         errorMessageElement.textContent = "";
+        // document.getElementById('mathquill-plain').value = mathField.text();
+        document.getElementById('mathquill-plain').value = mathField.text();
 
         return true;
     }
 
-    var mathFieldSpan = document.getElementById('mathquill-input');
-    var mathField = MQ.MathField(mathFieldSpan, {
-        spaceBehavesLikeTab: true, // Customize MathQuill behavior
+
+    var mathQuillInput = document.getElementById('mathquill-input');
+    var latexInput = document.getElementById('mathquill-latex');
+
+    var MQ = MathQuill.getInterface(2);
+    var mathField = MQ.MathField(mathQuillInput, {
+        spaceBehavesLikeTab: true,
+        handlers: {
+            edit: function () {
+                var latex = mathField.latex();
+                latexInput.value = latex;
+            }
+        }
     });
 
-    // Capture the input and update the hidden input field
-    mathField.keystroke(
-        event => {
-            var latex = mathField.latex();
-            document.getElementById('expression').value = latex;
-        }
-    );
+    function updateMathQuillInput() {
+        var latexContent = latexInput.value;
+        mathField.latex(latexContent);
+    }
+
+    updateMathQuillInput();
 
 </script>
 {% endblock %}

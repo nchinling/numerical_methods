@@ -3,11 +3,18 @@
 <div class="container">
     <div class="col-md-6">
         <h1>Linear and Quadratic Equation Solver</h1>
-        <form method="POST">
+        <form method="POST" action="/equation_solver" onsubmit="return convertEqnToString();">
             <label for="equation">Enter an equation to solve for <i>x</i>. (<i>The right-hand side must be equal to </i>
                 0):</label>
-            <input class="form-control" type="text" id="equation" name="equation" required
-                value="{{ request.form['equation'] if request.form['equation'] else '' }}">
+            <!-- <input class="form-control" type="text" id="equation" name="equation" required
+                value="{{ request.form['equation'] if request.form['equation'] else '' }}"> -->
+            <div id="mathquill-input" class="mathquill-input form-control" required>
+            </div>
+            <input type="hidden" id="mathquill-latex" name="mathquill_latex"
+                value="{{ request.form['mathquill_latex'] }}">
+            <input type="hidden" id="mathquill-plain" name="mathquill_plain">
+
+            <br><br>
             <br>
             <button type="submit" class="btn btn-secondary">Solve</button>
         </form>
@@ -26,4 +33,35 @@
 
     </div>
 </div>
+
+<script>
+
+    function convertEqnToString() {
+        document.getElementById('mathquill-plain').value = mathField.text();
+        return true;
+    }
+
+
+    var mathQuillInput = document.getElementById('mathquill-input');
+    var latexInput = document.getElementById('mathquill-latex');
+
+    var MQ = MathQuill.getInterface(2);
+    var mathField = MQ.MathField(mathQuillInput, {
+        spaceBehavesLikeTab: true,
+        handlers: {
+            edit: function () {
+                var latex = mathField.latex();
+                latexInput.value = latex;
+            }
+        }
+    });
+
+    function updateMathQuillInput() {
+        var latexContent = latexInput.value;
+        mathField.latex(latexContent);
+    }
+
+    updateMathQuillInput();
+
+</script>
 {% endblock %}
