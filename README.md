@@ -1,6 +1,6 @@
 # Linear and Quadratic Equations Solver App
 
-This is a Flask web application for performing numerical methods, including derivative and integral calculations, as well as solving linear and quadratic equations.
+This is a Flask web application for performing derivative and integral calculations, as well as solving linear and quadratic equations.
 
 ## Table of Contents
 
