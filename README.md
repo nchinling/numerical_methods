@@ -1,15 +1,4 @@
-# MathJax
-
-
-# Bootstrap
-
-# Django
-
-# SymPy
-
-# MathQuill
-
-# Numerical Methods Web App
+# Linear and Quadratic Equations Solver App
 
 This is a Flask web application for performing numerical methods, including derivative and integral calculations, as well as solving linear and quadratic equations.
 
